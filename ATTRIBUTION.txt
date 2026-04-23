@@ -1,0 +1,3 @@
+Inspired by 4skinSkywalker/Syllogimous-v4
+License basis: CC BY-NC 3.0
+Personal noncommercial adaptation for Android/PWA use.

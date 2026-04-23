@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#007bff" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Syllogimous Clone" />
+  <title>Syllogimous Android PWA Clone</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="favicon-32x32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@300..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <button class="menu-button" id="menuButton" aria-label="Open menu">☰</button>
+        <div>
+          <div class="eyebrow">Android-friendly clone</div>
+          <div class="brand">Syllogimous</div>
+        </div>
+      </div>
+      <div class="tier-chip" id="tierChip">Adept · 0 pts</div>
+    </header>
+
+    <aside id="drawer" class="drawer hidden" aria-hidden="true">
+      <div class="drawer-card">
+        <div class="drawer-title">Navigate</div>
+        <nav class="drawer-nav">
+          <button data-screen="intro">Intro</button>
+          <button data-screen="start">Start</button>
+          <button data-screen="game">Game</button>
+          <button data-screen="history">History</button>
+          <button data-screen="stats">Stats</button>
+          <button data-screen="settings">Settings</button>
+          <button data-screen="tiers">Tiers Matrix</button>
+          <button data-screen="about">About</button>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="screen-wrap">
+      <section id="screen-intro" class="screen">
+        <div class="card">
+          <div class="card-body prose">
+            <h1>Welcome to Syllogimous!</h1>
+            <p>
+              This mobile-friendly build is a noncommercial clone inspired by the original Syllogimous v4.
+              It keeps the same overall flow: tiers, score, arcade/playground, question history, stats,
+              local persistence, installable PWA behavior, and a broad set of logical reasoning exercises.
+            </p>
+            <p>
+              The original project presents Syllogimous as an Angular single-page logic training app with
+              tiered progression, score-based advancement, local storage persistence, and grouped question
+              generation across distinction, comparison, syllogism, arrangement, direction, graph matching,
+              analogy, and binary problems. citeturn892759search0turn892759search2turn892759search3turn19file0turn20file0
+            </p>
+            <p>
+              This clone is packaged as a static PWA so it can be installed on Android from Chrome and run like an app.
+            </p>
+            <h2>Useful Links</h2>
+            <div class="links-grid">
+              <a href="https://github.com/4skinSkywalker/Syllogimous-v4" target="_blank" rel="noreferrer">Original repository</a>
+              <a href="https://4skinskywalker.github.io/Syllogimous-v4/" target="_blank" rel="noreferrer">Original live app</a>
+              <a href="https://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="noreferrer">CC BY-NC 3.0 license</a>
+            </div>
+          </div>
+          <div class="card-footer toolbar split">
+            <label class="checkbox-row">
+              <input type="checkbox" id="dontShowIntroAgain" />
+              <span>Don't show anymore</span>
+            </label>
+            <button class="btn btn-outline" id="skipIntroBtn">Skip Intro</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-start" class="screen hidden">
+        <div class="card">
+          <div class="card-body">
+            <div class="progress-card">
+              <div>
+                <div class="muted small">Current tier</div>
+                <div class="tier-line"><span id="startTierName">Adept</span> <span id="startScore">0 pts</span></div>
+                <div class="muted small" id="nextTierHint">Next Scholar · 250 pts left</div>
+              </div>
+              <div class="daily-progress">
+                <div class="ring"><span id="dailyProgressPercent">0%</span></div>
+                <div class="muted small">Daily goal progress</div>
+              </div>
+            </div>
+
+            <ul class="stats-list">
+              <li><b>Correct</b><span id="statCorrect">0</span></li>
+              <li><b>Timeout</b><span id="statTimeout">0</span></li>
+              <li><b>Incorrect</b><span id="statIncorrect">0</span></li>
+              <li><b>Longest Streak</b><span id="statLongest">0</span></li>
+              <li><b>Current Streak</b><span id="statCurrent">0</span></li>
+              <li><b>Playtime Today</b><span id="statPlayToday">0m</span></li>
+              <li><b>Playtime This Week</b><span id="statPlayWeek">0m</span></li>
+            </ul>
+          </div>
+          <div class="card-footer toolbar center gap">
+            <button class="btn btn-outline" data-screen-open="settings">Settings</button>
+            <button class="btn btn-primary" id="arcadeBtn">Arcade</button>
+            <button class="btn btn-outline" id="playgroundBtn">Playground</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-game" class="screen hidden">
+        <div class="card">
+          <div class="card-body battlefield">
+            <div class="timer-wrap">
+              <div class="timer-bar"><div id="timerFill"></div></div>
+              <div class="timer-meta"><span id="timerLabel">Off</span><span id="modeLabel">Arcade</span></div>
+            </div>
+
+            <div class="question-meta">
+              <span class="pill" id="questionTypePill">Distinction</span>
+              <span class="pill" id="questionDifficultyPill">Premises 2</span>
+            </div>
+
+            <div id="questionInstructions" class="instructions hidden"></div>
+
+            <div class="qa-block">
+              <div class="muted small">Premises</div>
+              <div id="premisesList" class="premises"></div>
+            </div>
+
+            <div class="qa-block">
+              <div class="muted small">Conclusion</div>
+              <div id="conclusionBox" class="conclusion"></div>
+            </div>
+          </div>
+          <div class="card-footer toolbar center gap">
+            <button class="btn btn-danger" id="falseBtn">False</button>
+            <button class="btn btn-success" id="trueBtn">True</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-history" class="screen hidden">
+        <div class="card">
+          <div class="card-body">
+            <div class="section-head split">
+              <h2>History</h2>
+              <button class="btn btn-outline small-btn" id="clearHistoryBtn">Clear</button>
+            </div>
+            <div id="historyList" class="history-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-stats" class="screen hidden">
+        <div class="card">
+          <div class="card-body">
+            <h2>Stats</h2>
+            <div class="grid two-col" id="statsGrid"></div>
+            <div class="grid two-col mt-16">
+              <div class="mini-card">
+                <div class="muted small">Accuracy</div>
+                <div class="big-number" id="accuracyValue">0%</div>
+              </div>
+              <div class="mini-card">
+                <div class="muted small">Total answered</div>
+                <div class="big-number" id="totalAnsweredValue">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-settings" class="screen hidden">
+        <div class="card">
+          <div class="card-body">
+            <h2>Settings</h2>
+            <div class="settings-grid">
+              <label>
+                <span>Timer</span>
+                <select id="timerTypeSelect">
+                  <option value="0">Off</option>
+                  <option value="30">30 seconds</option>
+                  <option value="45">45 seconds</option>
+                  <option value="60">60 seconds</option>
+                  <option value="90">90 seconds</option>
+                </select>
+              </label>
+              <label>
+                <span>Display mode</span>
+                <select id="displayModeSelect">
+                  <option value="standard">Standard</option>
+                  <option value="carousel">Carousel-like</option>
+                </select>
+              </label>
+              <label>
+                <span>Daily goal minutes</span>
+                <input id="dailyGoalInput" type="number" min="5" max="240" step="5" />
+              </label>
+            </div>
+            <div class="mt-16">
+              <div class="section-head"><h3>Enabled question types</h3></div>
+              <div id="questionTypeToggles" class="toggle-grid"></div>
+            </div>
+            <div class="toolbar gap mt-16 wrap">
+              <button class="btn btn-primary" id="saveSettingsBtn">Save settings</button>
+              <button class="btn btn-outline" id="resetProgressBtn">Reset progress</button>
+              <button class="btn btn-outline" id="exportStateBtn">Export data</button>
+              <label class="btn btn-outline file-btn">
+                Import data
+                <input type="file" id="importStateInput" accept="application/json" hidden />
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-tiers" class="screen hidden">
+        <div class="card">
+          <div class="card-body">
+            <h2>Tiers Matrix</h2>
+            <div id="tiersMatrix" class="tiers-matrix"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-about" class="screen hidden">
+        <div class="card">
+          <div class="card-body prose">
+            <h2>About this clone</h2>
+            <p>
+              The original repository explicitly licenses the material under CC BY-NC 3.0,
+              allowing sharing and adaptation with attribution for noncommercial use. citeturn324836search0
+            </p>
+            <p>
+              This package includes local persistence, installable PWA support, and a mobile-focused interface.
+              It is a best-effort independent recreation inspired by the source project’s structure, screen flow,
+              tier system, and question taxonomy. citeturn892759search1turn892759search2turn19file0turn20file0
+            </p>
+            <div class="attribution-box">
+              <b>Attribution</b>
+              <div>Inspired by: 4skinSkywalker / Syllogimous-v4</div>
+              <div>License basis: CC BY-NC 3.0</div>
+              <div>Use: noncommercial adaptation for personal Android use</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toastHost" class="toast-host"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
